@@ -36,8 +36,8 @@ L'objectif est de fournir une solution automatisée pour analyser et transformer
 
 1. **Cloner le dépôt** :
    ```bash
-   git clone <https://github.com/Ahak99/stock_price_etl.git>
-   cd <stock_price_etl>
+   git clone https://github.com/Ahak99/stock_price_etl.git
+   cd stock_price_etl
    ```
 
 2. **Installer les dépendances Python** :
