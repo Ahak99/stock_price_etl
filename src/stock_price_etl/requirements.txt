@@ -1,5 +1,6 @@
 pandas
 python-dotenv
 yfinance
-boto3
+# boto3
 apache_airflow
+unittest

@@ -20,10 +20,10 @@ def create_directories(ticker):
     Args:
         ticker (str): Ticker symbol.
     """
-    if not os.path.exists(f"data/raw_data/{ticker}"):
-        os.makedirs(f"data/raw_data/{ticker}")
-    if not os.path.exists(f"data/raw_data/{ticker}/{ticker}_Company_Profile"):
-        os.makedirs(f"data/raw_data/{ticker}/{ticker}_Company_Profile")
+    if not os.path.exists(f"src/stock_price_etl/data/raw_data/{ticker}"):
+        os.makedirs(f"src/stock_price_etl/data/raw_data/{ticker}")
+    if not os.path.exists(f"src/stock_price_etl/data/raw_data/{ticker}/{ticker}_Company_Profile"):
+        os.makedirs(f"src/stock_price_etl/data/raw_data/{ticker}/{ticker}_Company_Profile")
   
 def extraction(ticker, p_run_time):
     """

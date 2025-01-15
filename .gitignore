@@ -1,3 +1,17 @@
-venv
 
-data
+# Ignore all files in the raw_data directory
+src/stock_price_etl/data/raw_data/*
+
+# Ignore all files in the transformed_data directory
+src/stock_price_etl/data/transformed_data/*
+
+# Python specific
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.env/
+env/
+.venv/
+venv/

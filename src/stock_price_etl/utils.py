@@ -42,7 +42,10 @@ def get_sp500_constituents():
 
     # Populate the dictionary with tickers by sector
     for ticker, sector in zip(tickers[1:], sectors):  # Skip the first ticker (^GSPC)
-        tickers_sector[sector].append(ticker)
+        if sector:
+            tickers_sector[sector].append(ticker)
+        else:
+            print(f"Unknown sector '{sector}' for ticker '{ticker}'")
 
     # Return the tickers list (with ^GSPC), unique sectors, and tickers by sector
     return tickers, set(sectors), tickers_sector
@@ -82,7 +85,7 @@ def get_company_profile(ticker, p_run_time):
         data["close"] = None
     
     data["PipelineRunTime"] = p_run_time.strftime("%Y-%m-%d %H:%M")
-    save_to_json(data, ticker, f"data/raw_data/{ticker}/{ticker}_Company_Profile", "company_profile", p_run_time.strftime("%Y-%m-%d_%H-%M"))
+    save_to_json(data, ticker, f"src/stock_price_etl/data/raw_data/{ticker}/{ticker}_Company_Profile", "company_profile", p_run_time.strftime("%Y-%m-%d_%H-%M"))
     return data
 
 # *******************   Transformation   *******************
@@ -245,15 +248,15 @@ def extract_analyst_price_targets(data):
 def save_csv_files(ticker, json_data):
     try:
         # Define the sections to extract and append
-        append_to_csv(extract_company_profile(json_data), f"data/transformed_data/{ticker}/{ticker}_Company_Profile.csv")
-        append_to_csv(extract_market_data(json_data), f"data/transformed_data/{ticker}/{ticker}_Market_Data.csv")
-        append_to_csv(extract_valuation_ratios(json_data), f"data/transformed_data/{ticker}/{ticker}_Valuation_Ratios.csv")
-        append_to_csv(extract_dividends_returns(json_data), f"data/transformed_data/{ticker}/{ticker}_Dividends_and_Returns.csv")
-        append_to_csv(extract_financial_health(json_data), f"data/transformed_data/{ticker}/{ticker}_Financial_Health.csv")
-        append_to_csv(extract_growth_metrics(json_data), f"data/transformed_data/{ticker}/{ticker}_Growth_Metrics.csv")
-        append_to_csv(extract_risk_assessment(json_data), f"data/transformed_data/{ticker}/{ticker}_Risk_Assessment.csv")
-        append_to_csv(extract_current_prices(json_data), f"data/transformed_data/{ticker}/{ticker}_Current_Prices.csv")
-        append_to_csv(extract_analyst_price_targets(json_data), f"data/transformed_data/{ticker}/{ticker}_Analyst_Price_Targets.csv")
+        append_to_csv(extract_company_profile(json_data), f"src/stock_price_etl/data/transformed_data/{ticker}/{ticker}_Company_Profile.csv")
+        append_to_csv(extract_market_data(json_data), f"src/stock_price_etl/data/transformed_data/{ticker}/{ticker}_Market_Data.csv")
+        append_to_csv(extract_valuation_ratios(json_data), f"src/stock_price_etl/data/transformed_data/{ticker}/{ticker}_Valuation_Ratios.csv")
+        append_to_csv(extract_dividends_returns(json_data), f"src/stock_price_etl/data/transformed_data/{ticker}/{ticker}_Dividends_and_Returns.csv")
+        append_to_csv(extract_financial_health(json_data), f"src/stock_price_etl/data/transformed_data/{ticker}/{ticker}_Financial_Health.csv")
+        append_to_csv(extract_growth_metrics(json_data), f"src/stock_price_etl/data/transformed_data/{ticker}/{ticker}_Growth_Metrics.csv")
+        append_to_csv(extract_risk_assessment(json_data), f"src/stock_price_etl/data/transformed_data/{ticker}/{ticker}_Risk_Assessment.csv")
+        append_to_csv(extract_current_prices(json_data), f"src/stock_price_etl/data/transformed_data/{ticker}/{ticker}_Current_Prices.csv")
+        append_to_csv(extract_analyst_price_targets(json_data), f"src/stock_price_etl/data/transformed_data/{ticker}/{ticker}_Analyst_Price_Targets.csv")
     except Exception as e:
         print(f"Error appending Company Profile for ticker {ticker}: {e}")
 # ########################## Save DATA in s3 ##########################
