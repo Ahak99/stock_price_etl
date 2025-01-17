@@ -1,6 +1,5 @@
 import os
 import sys
-import time
 
 # Add parent directory to the system path to access utils.py
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -21,7 +20,7 @@ def pipeline():
 if __name__ == "__main__":
     pipeline()
     
-# python src/data_pipeline/services/etl_dag.py
+# python src/stock_price_etl/services/stocks_dag.py
 
 # from datetime import timedelta
 # from airflow import DAG

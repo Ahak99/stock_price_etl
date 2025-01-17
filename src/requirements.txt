@@ -1,0 +1,9 @@
+s3fs
+pandas
+yfinance
+unittest
+apache_airflow
+
+# airflowctl
+# python-dotenv
+# boto3

@@ -1,6 +1,0 @@
-pandas
-python-dotenv
-yfinance
-# boto3
-apache_airflow
-unittest

@@ -1,9 +1,9 @@
 
 # Ignore all files in the raw_data directory
-src/stock_price_etl/data/raw_data/*
+src/data/raw_data/*
 
 # Ignore all files in the transformed_data directory
-src/stock_price_etl/data/transformed_data/*
+src/data/transformed_data/*
 
 # Python specific
 __pycache__/
