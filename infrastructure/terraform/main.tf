@@ -4,14 +4,14 @@ resource "aws_s3_bucket" "stock-price-etl-bucket" {
 }
 
 # Folders within the main bucket
-resource "aws_s3_bucket_object" "raw_data" {
+resource "aws_s3_bucket_object" "raw-data" {
   bucket = aws_s3_bucket.stock-price-etl-bucket.bucket
-  key    = "raw_data_bucket/"
+  key    = "raw-data/"
 }
 
-resource "aws_s3_bucket_object" "transformed_data" {
+resource "aws_s3_bucket_object" "transformed-data" {
   bucket = aws_s3_bucket.stock-price-etl-bucket.bucket
-  key    = "transformed_data_bucket/"
+  key    = "transformed-data/"
 }
 
 output "bucket_name" {
