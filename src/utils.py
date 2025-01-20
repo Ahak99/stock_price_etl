@@ -53,7 +53,7 @@ def get_sp500_constituents():
 # Function to save data to a JSON file
 def save_to_json(data, ticker, path, data_type, current_time):
     filename = f"{path}/{ticker}_{data_type}_{current_time}.json"
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    # os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, 'w') as json_file:
         json.dump(data, json_file, indent=4)
 
