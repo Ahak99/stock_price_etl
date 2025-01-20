@@ -12,10 +12,12 @@ def transformation(ticker):
     print(f"Ticker : {ticker}")
         
     # Use the function with your specific file path
-    json_file_path = get_latest_file(f"src/data/raw_data/{ticker}/{ticker}_Company_Profile/{ticker}_company_profile_*.json")
+    # json_file_path = get_latest_file(f"src/data/raw_data/{ticker}/{ticker}_Company_Profile/{ticker}_company_profile_*.json")
+    json_file_path = get_latest_file(f"s3://stocks-etl-bucket/raw_data/{ticker}/{ticker}_Company_Profile/{ticker}_company_profile_*.json")
 
-    if not os.path.exists(f"src/data/transformed_data/{ticker}"):
-        os.makedirs(f"src/data/transformed_data/{ticker}")
+
+    # if not os.path.exists(f"src/data/transformed_data/{ticker}"):
+    #     os.makedirs(f"src/data/transformed_data/{ticker}")
 
     # Load JSON data and update CSVs by appending
     json_data = load_json_data(json_file_path)

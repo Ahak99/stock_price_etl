@@ -13,17 +13,17 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils import get_company_profile, get_sp500_constituents
 from services.sync_launcher import sync_launcher
 
-def create_directories(ticker):
-    """
-    Create directories for raw data if they do not exist.
+# def create_directories(ticker):
+#     """
+#     Create directories for raw data if they do not exist.
 
-    Args:
-        ticker (str): Ticker symbol.
-    """
-    if not os.path.exists(f"src/data/raw_data/{ticker}"):
-        os.makedirs(f"src/data/raw_data/{ticker}")
-    if not os.path.exists(f"src/data/raw_data/{ticker}/{ticker}_Company_Profile"):
-        os.makedirs(f"src/data/raw_data/{ticker}/{ticker}_Company_Profile")
+#     Args:
+#         ticker (str): Ticker symbol.
+#     """
+#     if not os.path.exists(f"src/data/raw_data/{ticker}"):
+#         os.makedirs(f"src/data/raw_data/{ticker}")
+#     if not os.path.exists(f"src/data/raw_data/{ticker}/{ticker}_Company_Profile"):
+#         os.makedirs(f"src/data/raw_data/{ticker}/{ticker}_Company_Profile")
   
 def extraction(ticker, p_run_time):
     """
@@ -33,7 +33,7 @@ def extraction(ticker, p_run_time):
         ticker (str): Ticker symbol.
     """
     print(f"Ticker : {ticker}")
-    create_directories(ticker)
+    # create_directories(ticker)
     get_company_profile(ticker, p_run_time)
     
 def data_extraction():
