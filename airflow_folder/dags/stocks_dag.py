@@ -75,15 +75,15 @@
 import os
 import sys
 # Add parent directory to the system path to access utils.py
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+import s3fs
 import subprocess
 from datetime import timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
-from services.data_extraction import data_extraction
-from services.data_transformation import data_transformation
+from src.services.data_extraction import data_extraction
+from src.services.data_transformation import data_transformation
 
 # Function to run unit tests
 def run_tests():

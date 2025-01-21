@@ -7,6 +7,8 @@ import pandas as pd # type: ignore
 import re
 import glob
 import yfinance as yf # type: ignore
+import s3fs
+
 
 # *******************   Extract   *******************
 # Function to get S&P 500 constituents from Wikipedia
@@ -50,12 +52,22 @@ def get_sp500_constituents():
     # Return the tickers list (with ^GSPC), unique sectors, and tickers by sector
     return tickers, set(sectors), tickers_sector
 
+# # Function to save data to a JSON file
+# def save_to_json(data, ticker, path, data_type, current_time):
+#     filename = f"{path}/{ticker}_{data_type}_{current_time}.json"
+    # # os.makedirs(os.path.dirname(filename), exist_ok=True)
+    # with open(filename, 'w') as json_file:
+    #     json.dump(data, json_file, indent=4)
+        
 # Function to save data to a JSON file
 def save_to_json(data, ticker, path, data_type, current_time):
     filename = f"{path}/{ticker}_{data_type}_{current_time}.json"
-    # os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, 'w') as json_file:
-        json.dump(data, json_file, indent=4)
+    fs = s3fs.S3FileSystem()
+
+    # Write the JSON file to the S3 bucket
+    with fs.open(filename, 'w') as f:
+        json.dump(data, f)
+    
 
 # Function to get company profile and stock info using yfinance
 def get_company_profile(ticker, p_run_time):
@@ -116,30 +128,77 @@ def normalize_value(value):
     except (ValueError, TypeError):
         return float('nan')  # Return NaN if conversion fails
     
-def get_latest_file(path):
-    # Get a list of all matching files in the directory
-    files = glob.glob(path)
-    # Sort files based on modification time (newest first) and return the first one
-    if files:
-        latest_file = max(files, key=os.path.getmtime)
-        return latest_file
-    else:
-        return None
-  
-# Function to load JSON data
-def load_json_data(json_path):
-    with open(json_path, 'r') as f:
-        return json.load(f)
+# def get_latest_file(path):
+#     # Get a list of all matching files in the directory
+#     files = glob.glob(path)
+#     # Sort files based on modification time (newest first) and return the first one
+#     if files:
+#         latest_file = max(files, key=os.path.getmtime)
+#         return latest_file
+#     else:
+#         return None
 
-# Append data to CSV if it exists, or create new CSV if it doesn't
-def append_to_csv(data_dict, filename):
-    df = pd.DataFrame([data_dict])
+# Function to get the latest file from an S3 path
+def get_latest_file(path):
+    """
+    Get the latest file from an S3 path based on the last modified timestamp.
+    """
+    fs = s3fs.S3FileSystem()  # Initialize S3 filesystem
+    files = fs.glob(path)  # Find all matching files
+    if files:
+        # Get the latest file based on the LastModified timestamp
+        latest_file = max(files, key=lambda x: fs.info(x)['LastModified'])
+        return latest_file
+    return None  
+
+# # Function to load JSON data
+# def load_json_data(json_path):
+#     with open(json_path, 'r') as f:
+#         return json.load(f)
+
+# Function to load JSON data from a file (supports S3 paths)
+def load_json_data(json_path):
+    """
+    Load JSON data from a file, supports S3 paths.
+    """
+    fs = s3fs.S3FileSystem()
+    with fs.open(json_path, 'r') as f:
+        return json.load(f)
     
-    if os.path.isfile(filename):
-        df.to_csv(filename, mode='a', header=False, index=False)  # Append without header
-    else:
-        df.to_csv(filename, mode='w', header=True, index=False)  # Write with header
+# # Append data to CSV if it exists, or create new CSV if it doesn't
+# def append_to_csv(data_dict, filename):
+#     df = pd.DataFrame([data_dict])
+    
+#     if os.path.isfile(filename):
+#         df.to_csv(filename, mode='a', header=False, index=False)  # Append without header
+#     else:
+#         df.to_csv(filename, mode='w', header=True, index=False)  # Write with header
       
+# Append data to CSV if it exists, or create a new CSV if it doesn't
+def append_to_csv(data_dict, filename):
+    """
+    Append data to a CSV file. If the file doesn't exist, create it.
+    Supports both local and S3 paths.
+    """
+    df = pd.DataFrame([data_dict])  # Convert the dictionary to a DataFrame
+    fs = s3fs.S3FileSystem()
+
+    if filename.startswith("s3://"):
+        if fs.exists(filename):
+            # Append data without headers if file exists
+            with fs.open(filename, 'a') as f:
+                df.to_csv(f, mode='a', header=False, index=False)
+        else:
+            # Write data with headers if file doesn't exist
+            with fs.open(filename, 'w') as f:
+                df.to_csv(f, mode='w', header=True, index=False)
+    else:
+        # Handle local filesystem
+        if os.path.isfile(filename):
+            df.to_csv(filename, mode='a', header=False, index=False)  # Append without header
+        else:
+            df.to_csv(filename, mode='w', header=True, index=False)  # Write with header
+            
 def extract_company_profile(data):
     return {
         "PipelineRunTime": data.get("PipelineRunTime"),

@@ -38,11 +38,13 @@ def extraction(ticker, p_run_time):
     
 def data_extraction():
     p_run_time = datetime.now()
-    _, sectors, tickers_sector = get_sp500_constituents()
-    for sector in sectors:
-        print(f"\n######   Start Data Extraction | Sector :  {sector}  ######\n")  
-        # Launch extraction for each ticker in parallel
-        args_list = [(ticker, p_run_time) for ticker in tickers_sector[sector]]
-        sync_launcher(extraction, args_list)
-        print(f"\n######   End of Data Extraction | Sector :  {sector}  ######\n")
-        time.sleep(15)
+    tickers, sectors, tickers_sector = get_sp500_constituents()
+    for ticker in tickers:
+        extraction(ticker, p_run_time)
+    # for sector in sectors:
+    #     print(f"\n######   Start Data Extraction | Sector :  {sector}  ######\n")  
+    #     # Launch extraction for each ticker in parallel
+    #     args_list = [(ticker, p_run_time) for ticker in tickers_sector[sector]]
+    #     sync_launcher(extraction, args_list)
+    #     print(f"\n######   End of Data Extraction | Sector :  {sector}  ######\n")
+    #     time.sleep(15)

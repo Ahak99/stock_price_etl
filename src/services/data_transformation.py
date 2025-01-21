@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+import s3fs
 from utils import get_latest_file, load_json_data, save_csv_files, get_sp500_constituents
 from services.sync_launcher import sync_launcher
    
@@ -24,7 +24,9 @@ def transformation(ticker):
     save_csv_files(ticker, json_data)
     
 def data_transformation():
-    _, sectors, tickers_sector = get_sp500_constituents()
+    tickers, sectors, tickers_sector = get_sp500_constituents()
+    # for ticker in tickers:
+    #     transformation(ticker)
     for sector in sectors:
         print(f"\n######   Start Data Transformation | Sector :  {sector}  ######\n")  
         # Launch Transformation for each ticker in parallel
@@ -32,3 +34,5 @@ def data_transformation():
         sync_launcher(transformation, args_list)
         print(f"\n######   End of Data Transformation | Sector :  {sector}  ######\n")
         time.sleep(5)
+
+
