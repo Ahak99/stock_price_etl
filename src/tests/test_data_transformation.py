@@ -1,11 +1,15 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import unittest
 from unittest.mock import patch
-from src.services.data_transformation import transformation, data_transformation
+from services.data_transformation import transformation, data_transformation
 
 class TestDataTransformation(unittest.TestCase):
-    @patch("src.services.data_transformation.save_csv_files")
-    @patch("src.services.data_transformation.load_json_data")
-    @patch("src.services.data_transformation.get_latest_file")
+    @patch("services.data_transformation.save_csv_files")
+    @patch("services.data_transformation.load_json_data")
+    @patch("services.data_transformation.get_latest_file")
     def test_transformation(self, mock_get_latest_file, mock_load_json_data, mock_save_csv_files):
         ticker = "AAPL"
         mock_get_latest_file.return_value = "s3://example.json"
@@ -19,8 +23,8 @@ class TestDataTransformation(unittest.TestCase):
         mock_load_json_data.assert_called_once_with("s3://example.json")
         mock_save_csv_files.assert_called_once_with(ticker, {"key": "value"})
 
-    @patch("src.services.data_transformation.sync_launcher")
-    @patch("src.services.data_transformation.get_sp500_constituents")
+    @patch("services.data_transformation.sync_launcher")
+    @patch("services.data_transformation.get_sp500_constituents")
     def test_data_transformation(self, mock_get_sp500_constituents, mock_sync_launcher):
         mock_get_sp500_constituents.return_value = (
             ["AAPL", "MSFT"],
