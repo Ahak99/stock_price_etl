@@ -1,5 +1,3 @@
-########################## Save data locally ##########################
-
 import os
 import json
 from datetime import datetime
@@ -9,8 +7,10 @@ import glob
 import yfinance as yf # type: ignore
 import s3fs
 
+# *********************************************************************
+# ****************************   Extract   ****************************
+# *********************************************************************
 
-# *******************   Extract   *******************
 # Function to get S&P 500 constituents from Wikipedia
 def get_sp500_constituents():
     # URL of the Wikipedia page containing the S&P 500 constituent list
@@ -51,19 +51,11 @@ def get_sp500_constituents():
 
     # Return the tickers list (with ^GSPC), unique sectors, and tickers by sector
     return tickers, set(sectors), tickers_sector
-
-# # Function to save data to a JSON file
-# def save_to_json(data, ticker, path, data_type, current_time):
-#     filename = f"{path}/{ticker}_{data_type}_{current_time}.json"
-    # # os.makedirs(os.path.dirname(filename), exist_ok=True)
-    # with open(filename, 'w') as json_file:
-    #     json.dump(data, json_file, indent=4)
         
 # Function to save data to a JSON file
 def save_to_json(data, ticker, path, data_type, current_time):
     filename = f"{path}/{ticker}_{data_type}_{current_time}.json"
     fs = s3fs.S3FileSystem()
-
     # Write the JSON file to the S3 bucket
     with fs.open(filename, 'w') as f:
         json.dump(data, f)
@@ -97,11 +89,13 @@ def get_company_profile(ticker, p_run_time):
         data["close"] = None
     
     data["PipelineRunTime"] = p_run_time.strftime("%Y-%m-%d %H:%M")
-    # save_to_json(data, ticker, f"src/data/raw_data/{ticker}/{ticker}_Company_Profile", "company_profile", p_run_time.strftime("%Y-%m-%d_%H-%M"))
     save_to_json(data, ticker, f"s3://stocks-etl-bucket/raw_data/{ticker}/{ticker}_Company_Profile", "company_profile", p_run_time.strftime("%Y-%m-%d_%H-%M"))
     return data
 
-# *******************   Transformation   *******************
+
+# **********************************************************************
+# *************************   Transformation   *************************
+# **********************************************************************
 
 # Normalization function
 def normalize_value(value):
@@ -127,16 +121,6 @@ def normalize_value(value):
         return float(value)
     except (ValueError, TypeError):
         return float('nan')  # Return NaN if conversion fails
-    
-# def get_latest_file(path):
-#     # Get a list of all matching files in the directory
-#     files = glob.glob(path)
-#     # Sort files based on modification time (newest first) and return the first one
-#     if files:
-#         latest_file = max(files, key=os.path.getmtime)
-#         return latest_file
-#     else:
-#         return None
 
 # Function to get the latest file from an S3 path
 def get_latest_file(path):
@@ -151,11 +135,6 @@ def get_latest_file(path):
         return latest_file
     return None  
 
-# # Function to load JSON data
-# def load_json_data(json_path):
-#     with open(json_path, 'r') as f:
-#         return json.load(f)
-
 # Function to load JSON data from a file (supports S3 paths)
 def load_json_data(json_path):
     """
@@ -164,16 +143,7 @@ def load_json_data(json_path):
     fs = s3fs.S3FileSystem()
     with fs.open(json_path, 'r') as f:
         return json.load(f)
-    
-# # Append data to CSV if it exists, or create new CSV if it doesn't
-# def append_to_csv(data_dict, filename):
-#     df = pd.DataFrame([data_dict])
-    
-#     if os.path.isfile(filename):
-#         df.to_csv(filename, mode='a', header=False, index=False)  # Append without header
-#     else:
-#         df.to_csv(filename, mode='w', header=True, index=False)  # Write with header
-      
+        
 # Append data to CSV if it exists, or create a new CSV if it doesn't
 def append_to_csv(data_dict, filename):
     """
@@ -307,16 +277,6 @@ def extract_analyst_price_targets(data):
 # Function to process and append data for each section
 def save_csv_files(ticker, json_data):
     try:
-        # Define the sections to extract and append
-        # append_to_csv(extract_company_profile(json_data), f"src/data/transformed_data/{ticker}/{ticker}_Company_Profile.csv")
-        # append_to_csv(extract_market_data(json_data), f"src/data/transformed_data/{ticker}/{ticker}_Market_Data.csv")
-        # append_to_csv(extract_valuation_ratios(json_data), f"src/data/transformed_data/{ticker}/{ticker}_Valuation_Ratios.csv")
-        # append_to_csv(extract_dividends_returns(json_data), f"src/data/transformed_data/{ticker}/{ticker}_Dividends_and_Returns.csv")
-        # append_to_csv(extract_financial_health(json_data), f"src/data/transformed_data/{ticker}/{ticker}_Financial_Health.csv")
-        # append_to_csv(extract_growth_metrics(json_data), f"src/data/transformed_data/{ticker}/{ticker}_Growth_Metrics.csv")
-        # append_to_csv(extract_risk_assessment(json_data), f"src/data/transformed_data/{ticker}/{ticker}_Risk_Assessment.csv")
-        # append_to_csv(extract_current_prices(json_data), f"src/data/transformed_data/{ticker}/{ticker}_Current_Prices.csv")
-        # append_to_csv(extract_analyst_price_targets(json_data), f"src/data/transformed_data/{ticker}/{ticker}_Analyst_Price_Targets.csv")
         append_to_csv(extract_company_profile(json_data), f"s3://stocks-etl-bucket/transformed_data/{ticker}/{ticker}_Company_Profile.csv")
         append_to_csv(extract_market_data(json_data), f"s3://stocks-etl-bucket/transformed_data/{ticker}/{ticker}_Market_Data.csv")
         append_to_csv(extract_valuation_ratios(json_data), f"s3://stocks-etl-bucket/transformed_data/{ticker}/{ticker}_Valuation_Ratios.csv")
