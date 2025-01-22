@@ -5,6 +5,9 @@ src/data/raw_data/*
 # Ignore all files in the transformed_data directory
 src/data/transformed_data/*
 
+# Ignore data directory
+src/data
+
 # Python specific
 __pycache__/
 *.py[cod]

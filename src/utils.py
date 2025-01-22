@@ -288,3 +288,4 @@ def save_csv_files(ticker, json_data):
         append_to_csv(extract_analyst_price_targets(json_data), f"s3://stocks-etl-bucket/transformed_data/{ticker}/{ticker}_Analyst_Price_Targets.csv")
     except Exception as e:
         print(f"Error appending Company Profile for ticker {ticker}: {e}")
+        
