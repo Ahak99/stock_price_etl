@@ -19,7 +19,7 @@ def run_tests():
     try:
         # Run all tests in the 'tests' directory
         result = subprocess.run(
-            ["python", "-m", "unittest", "discover", "-s", "src/tests"],
+            ["python", "-m", "unittest", "discover", "-s", "src/tests", "-p", "test_*.py"],
             capture_output=True,
             text=True,
         )
@@ -36,7 +36,7 @@ def execute_extraction():
              * ******** * ********* * ******** *     Extraction begin     * ******** * ********* * ******** *
              ************************************************************************************************""")
     data_extraction()
-
+    
 def execute_transformation():
     print("""****************************************************************************************************
              * ******** * ********* * ******** *     Transformation begin     * ******** * ********* * ******** *
@@ -67,7 +67,6 @@ test_task = PythonOperator(
     dag=dag,
 )
 
-# Define tasks
 extract_task = PythonOperator(
     task_id='extract_data',
     python_callable=execute_extraction,

@@ -51,7 +51,7 @@ def get_sp500_constituents():
 
     # Return the tickers list (with ^GSPC), unique sectors, and tickers by sector
     return tickers, set(sectors), tickers_sector
-        
+
 # Function to save data to a JSON file
 def save_to_json(data, ticker, path, data_type, current_time):
     filename = f"{path}/{ticker}_{data_type}_{current_time}.json"
@@ -101,7 +101,7 @@ def get_company_profile(ticker, p_run_time):
 def normalize_value(value):
     if value is None:  # Return NaN if the value is None
         return float('nan')
-        
+
     if isinstance(value, str):
         # Remove percentage signs and convert to decimal
         if "%" in value:
@@ -143,7 +143,7 @@ def load_json_data(json_path):
     fs = s3fs.S3FileSystem()
     with fs.open(json_path, 'r') as f:
         return json.load(f)
-        
+
 # Append data to CSV if it exists, or create a new CSV if it doesn't
 def append_to_csv(data_dict, filename):
     """
@@ -152,7 +152,7 @@ def append_to_csv(data_dict, filename):
     """
     df = pd.DataFrame([data_dict])  # Convert the dictionary to a DataFrame
     fs = s3fs.S3FileSystem()
-
+    
     if filename.startswith("s3://"):
         if fs.exists(filename):
             # Append data without headers if file exists
@@ -168,7 +168,7 @@ def append_to_csv(data_dict, filename):
             df.to_csv(filename, mode='a', header=False, index=False)  # Append without header
         else:
             df.to_csv(filename, mode='w', header=True, index=False)  # Write with header
-            
+
 def extract_company_profile(data):
     return {
         "PipelineRunTime": data.get("PipelineRunTime"),

@@ -1,13 +1,8 @@
-import os
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import unittest
 from unittest.mock import patch
-from services.sync_launcher import sync_launcher
+from src.services.sync_launcher import sync_launcher
 
 class TestSyncLauncher(unittest.TestCase):
-
     @patch("multiprocessing.Pool")
     def test_sync_launcher_with_tuples(self, mock_pool):
         args_list = [(1, 2), (3, 4)]
@@ -19,3 +14,6 @@ class TestSyncLauncher(unittest.TestCase):
         args_list = [1, 2, 3, 4]
         sync_launcher(lambda x: x + 1, args_list)
         mock_pool.assert_called_once()
+
+if __name__ == "__main__":
+    unittest.main()
