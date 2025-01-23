@@ -19,11 +19,11 @@ L'objectif est de fournir une solution automatisée pour analyser et transformer
 
 - **Langages** : Python 🐍
 - **Bibliothèques** : Pandas, Numpy 📚
-- **Orchestration ETL** : Apache Airflow 🌀
+- **Orchestration ETL** : Apache Airflow 🔀
 - **Infrastructure Cloud** : AWS (EC2, S3) ☁️
-- **Infrastructure as Code** : Terraform 🏗️
+- **Infrastructure as Code** : Terraform 🗽️
 - **API** : Yahoo Finance API 🌐
-- **Gestion de version** : Git 🧰
+- **Gestion de version** : Git 🛠️
 
 ## Prérequis ✅
 
@@ -34,19 +34,44 @@ L'objectif est de fournir une solution automatisée pour analyser et transformer
 
 ## Installation ⚙️
 
-1. **Cloner le dépôt** :
+Toutes les étapes suivantes doivent être effectuées **dans l'instance EC2 créée**.
+
+1. **Mettre à jour le système et installer Python et Pip** :
+   ```bash
+   sudo apt-get update
+   sudo apt install -y python3-pip
+   sudo apt install -y python3.12-venv
+   ```
+
+2. **Créer un environnement virtuel et l'activer** :
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Cloner le dépôt du projet** :
    ```bash
    git clone https://github.com/Ahak99/stock_price_etl.git
-   cd stock_price_etl
    ```
 
-2. **Installer les dépendances Python** :
+4. **Réorganiser les fichiers du projet** :
    ```bash
-   pip install -r src/stock_price_etl/requirements.txt
+   mv stock_price_etl/src/requirements.txt ./
+   mv stock_price_etl/src ./
+   mv stock_price_etl/infrastructure ./
+   mv stock_price_etl/airflow_folder/dags airflow
    ```
 
-3. **Configurer l'environnement AWS avec Terraform** :
-   - Naviguez dans le répertoire `terraform`.
+5. **Installer les dépendances Python** :
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+6. **Configurer l'environnement AWS avec Terraform** :
+   - Accédez au répertoire `infrastructure` :
+     ```bash
+     cd infrastructure
+     ```
    - Initialisez Terraform :
      ```bash
      terraform init
@@ -56,13 +81,10 @@ L'objectif est de fournir une solution automatisée pour analyser et transformer
      terraform apply
      ```
 
-4. **Configurer Apache Airflow** :
-   - Installer Airflow si ce n'est pas déjà fait.
-   - Ajouter les DAGs au répertoire Airflow.
-   - Lancer le service Airflow :
-     ```bash
-     airflow standalone
-     ```
+7. **Vérifier l'installation d'Airflow** :
+   ```bash
+   airflow standalone
+   ```
 
 ## Utilisation 🚀
 
